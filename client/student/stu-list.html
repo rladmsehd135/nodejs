@@ -69,10 +69,6 @@
                     .then(res => res.json())
                     .then(data => {
                         self.list = data.list;
-                        for(let i=0; i<self.list.length; i++){
-                            self.list[i].viewUrl = "stu-view.html?stuNo="+self.list[i].STU_NO;
-                        }
-
                         self.list.forEach(item => {
                             item.viewUrl2 = "stu-view.html?stuNo="+item.STU_NO
                         })

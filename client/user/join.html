@@ -25,13 +25,16 @@
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
-            <label>아이디 : <input v-model="userId"></label>
+            <label>아이디 : <input v-model="info.userId"></label>
         </div> 
         <div>
-            <label>비밀번호 : <input v-model="pwd" type="password"></label>
+            <label>비밀번호 : <input v-model="info.pwd" type="password"></label>
         </div> 
+		<div>
+            <label>이름 : <input v-model="info.userName"></label>
+        </div>
         <div>
-            <button @click="fnLogin">로그인</button>
+            <button @click="fnJoin">회원가입</button>
         </div>
     </div>
 </body>
@@ -41,34 +44,31 @@
     const app = Vue.createApp({
         data() {
             return {
+                info : {
+                    userId : "",
+                    pwd : "",
+				    userName : ""
+                }
                 // 변수 - (key : value)
-                userId : "",
-                pwd : ""
+                
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnLogin: function () {
+            fnJoin: function () {
                 let self = this;
-                fetch("http://localhost:3000/user/login",{
+                fetch("http://localhost:3000/user/join",{
                     method : "POST",
                     headers : {
                         "Content-type" : "application/json"
                     },
-                    body : JSON.stringify({
-                        userId : self.userId,
-                        pwd : self.pwd
-                    })
+                    body : JSON.stringify(self.info)
                 })
                     .then(res => res.json())
                     .then(data => {
                         console.log(data);
-                        if(data.message == "success"){
-                            alert(data.info.userName + "님 환영합니다!");
-                            location.href="../student/stu-list.html";
-                        } else {
-                            alert("아이디/비밀번호 확인하셈")
-                        }
+                        alert("가입되었습니다.");
+                        location.href="login.html"
                     })
             }
         }, // methods
@@ -79,8 +79,6 @@
     });
 
     app.mount('#app');
-
-
 </script>
 
 
