@@ -43,7 +43,7 @@ async function startServer() {
 
 app.get("/qrcode", async (req,res)=>{
   try{
-
+939
     let qrImg = await QRCode.toDataURL("http://www.naver.com");
     res.send(
       `

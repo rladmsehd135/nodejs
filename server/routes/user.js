@@ -5,6 +5,40 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 const saltRounds = 10;
+router.get('/check/:userId', async (req, res) => {
+  const { userId } = req.params;
+  let connection;
+  try {
+    connection = await db.getConnection();
+    const result = await connection.execute(
+      `SELECT * FROM TBL_USER WHERE USERID = :userId`,
+      [userId],
+      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+    );
+
+    let r = false;
+    let message = "";
+    if (result.rows && result.rows.length > 0) {
+      r = false;
+      message = "이미 사용중인 아이디 입니다.";
+    } else {
+      r = true;
+      message = "사용가능한 아이디 입니다";
+    }
+
+    res.json({
+      result: r,
+      message: message,
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  } finally {
+    if (connection) {
+      await connection.close();
+    }
+  }
+});
 
 router.post('/login', async (req, res) => {
   const { userId, pwd } = req.body;

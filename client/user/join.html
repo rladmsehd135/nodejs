@@ -25,7 +25,8 @@
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
-            <label>아이디 : <input v-model="info.userId"></label>
+            <label>아이디 : <input v-model="info.userId" :disabled="info.result"></label>
+            <button @click="fnCheck" :disabled="info.result">중복체크</button>
         </div> 
         <div>
             <label>비밀번호 : <input v-model="info.pwd" type="password"></label>
@@ -47,7 +48,8 @@
                 info : {
                     userId : "",
                     pwd : "",
-				    userName : ""
+				    userName : "",
+                    result : false
                 }
                 // 변수 - (key : value)
                 
@@ -57,6 +59,10 @@
             // 함수(메소드) - (key : function())
             fnJoin: function () {
                 let self = this;
+                if(!self.info.result){
+                    alert("중복체크 후 이용해주셈");
+                    return;
+                }
                 fetch("http://localhost:3000/user/join",{
                     method : "POST",
                     headers : {
@@ -69,6 +75,17 @@
                         console.log(data);
                         alert("가입되었습니다.");
                         location.href="login.html"
+                    })
+            },
+
+            fnCheck: function () {
+                let self = this;
+                fetch("http://localhost:3000/user/check/"+self.info.userId)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        alert(data.message);
+                        self.info.result = data.result;
                     })
             }
         }, // methods
